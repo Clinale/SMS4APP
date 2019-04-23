@@ -52,26 +52,17 @@ public class MainActivity extends AppCompatActivity {
                 //String filepath;
                 Uri uri = data.getData();
                 filepath = uri.getPath();
+
+                int s = filepath.indexOf('/', 1);
+                filepath = "/storage/emulated/0"+filepath.substring(s);
                 tv.setText(filepath);
-
-                filepath = "/storage/emulated/0/" + filepath.substring(10);
-
-
 
                 Toast.makeText(this, "文件路径：" + filepath, Toast.LENGTH_SHORT).show();
 
                 findViewById(R.id.button_2).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String message = SMS4FromJNI.sm4_encrypt_ecb(ENC_MODE, filepath);
-                        String path = Utils.getFilePath(filepath);
-                        String name = Utils.getFileName(filepath);
-                        //String newfilepath = path+"/"+name+".enc";
-                        File file = Utils.createFile(path, name+".enc");
-                        Utils.writeFile(file, message);
-
-                        //Utils.deleteFile(filepath);
-
+                        SMS4FromJNI.sms4_ecb(ENC_MODE, filepath);
                         Toast.makeText(MainActivity.this, "加密成功", Toast.LENGTH_SHORT).show();
                         //Toast.makeText(MainActivity.this, "文件校验和：" + Utils.checkSum(filepath), Toast.LENGTH_SHORT).show();
                     }
@@ -86,15 +77,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("dec_mode", ext);
                             return;
                         }
-
-                        String message = SMS4FromJNI.sm4_encrypt_ecb(DEC_MODE, filepath);
-                        String path = Utils.getFilePath(filepath);
-                        String name = Utils.getFileName(filepath);
-                        //String newfilepath = path+"/"+name+".enc";
-                        File file = Utils.createFile(path+"_dec", name.substring(0, name.length()-4));
-
-                        Utils.writeFile(file, message);
-
+                        SMS4FromJNI.sms4_ecb(DEC_MODE, filepath);
                         Utils.deleteFile(filepath);
 
                         Toast.makeText(MainActivity.this, "解密成功", Toast.LENGTH_SHORT).show();

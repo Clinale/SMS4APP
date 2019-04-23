@@ -15,8 +15,27 @@ public class SMS4FromJNI {
 
     public static native void sm4_setkey_enc_jni(String initKey); // 设置加密密钥
     public static native void sm4_setkey_dec_jni(String initKey); // 设置解密密钥
-    public static native String sm4_crypt_ecb_jni( int mode, int length, String input); // 返回加密或解密的结果
+    public static native void sm4_crypt_ecb_jni( int mode, String path, String name); // 返回加密或解密的结果
 
+    public static void sms4_ecb(int mode, String filepath){//initKey = md5(filepath)
+
+        //设置秘钥
+        String initKey = filepath;
+        if (mode == MainActivity.DEC_MODE) {
+            initKey = filepath.substring(0, filepath.length() - 4); //去掉后缀.enc
+            sm4_setkey_dec_jni(Utils.md5(initKey));
+        } else {
+            sm4_setkey_enc_jni(Utils.md5(initKey));
+        }
+        try { // 捕获异常
+            sm4_crypt_ecb_jni(mode, Utils.getFilePath(filepath), Utils.getFileName((filepath)));
+        }catch(Exception e){
+            Log.d("sms4_ecb", e.toString()+filepath);
+        }
+
+    }
+
+    /*
     public static String sm4_encrypt_ecb(int mode, String filepath){ //initKey = md5(filepath)
         FileInputStream inputStream;
         File file;
@@ -27,10 +46,13 @@ public class SMS4FromJNI {
         byte[] content = new byte[16];
 
         try {
+            initKey = filepath;
             if (mode == MainActivity.DEC_MODE) {
                 initKey = filepath.substring(0, filepath.length() - 4); //去掉后缀.enc
-                sm4_setkey_dec_jni(initKey);
-            } else sm4_setkey_enc_jni(initKey);
+                sm4_setkey_dec_jni(Utils.md5(initKey));
+            } else {
+                sm4_setkey_enc_jni(Utils.md5(initKey));
+            }
         }catch(Exception e){
             //Toast.makeText(MainActivity, e.toString(), Toast.LENGTH_SHORT).show();
             Log.d("sm4_encrypt_ecb", e.toString());
@@ -56,4 +78,5 @@ public class SMS4FromJNI {
         }
         return encrypted_message;
     }
+    */
 }

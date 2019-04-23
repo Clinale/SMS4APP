@@ -6,6 +6,7 @@
 #define _Included_com_example_dell_sms4_SMS4FromJNI
 
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -30,8 +31,8 @@ JNIEXPORT void JNICALL Java_com_example_dell_sms4_SMS4FromJNI_sm4_1setkey_1dec_1
  * Method:    sm4_crypt_ecb
  * Signature: (IILjava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_example_dell_sms4_SMS4FromJNI_sm4_1crypt_1ecb_1jni
-  (JNIEnv *, jclass, jint, jint, jstring);
+JNIEXPORT void JNICALL Java_com_example_dell_sms4_SMS4FromJNI_sm4_1crypt_1ecb_1jni
+  (JNIEnv *, jclass, jint, jstring, jstring);
 
 
 #ifdef __cplusplus
