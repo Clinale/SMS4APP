@@ -15,7 +15,7 @@ public class SMS4FromJNI {
 
     public static native void sm4_setkey_enc_jni(String initKey); // 设置加密密钥
     public static native void sm4_setkey_dec_jni(String initKey); // 设置解密密钥
-    public static native void sm4_crypt_ecb_jni( int mode, String path, String name); // 返回加密或解密的结果
+    public static native void sm4_crypt_ecb_jni( int mode, String path, String name); // 对文件进行加密或解密
 
     public static void sms4_ecb(int mode, String filepath){//initKey = md5(filepath)
 

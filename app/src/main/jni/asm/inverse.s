@@ -1,0 +1,5 @@
+	AREA inverse, CODE, READONLY
+	EXPORT inverse
+	ENTRY
+
+	END

@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "com_example_dell_sms4_SMS4FromJNI.h"
-#include "sms4.h"
+#include "nenosms4.h"
 
 #define MyException "java.io.FileNotFoundException"
 
@@ -116,16 +116,29 @@ JNIEXPORT void JNICALL Java_com_example_dell_sms4_SMS4FromJNI_sm4_1crypt_1ecb_1j
   int nFileLen = ftell(fin); // 文件长度
   fseek(fin, 0, SEEK_SET); // 定位文件开始
   int nHandleLen=0;
+
   while(nHandleLen!=nFileLen){
-    int nRead = nFileLen-nHandleLen>=16?16:nFileLen-nHandleLen;
-    int tmp = fread(buffer, 1, nRead, fin); //读取16个字节
-    for(int i=tmp; i<16; i++) buffer[i] = 0; //填充0
+    memset(plain, 0, sizeof(plain)); // 首先清零
 
-    sm4_crypt_ecb(&ctx, (int)jmode, 16, (const unsigned char*)buffer, (unsigned char*)rtn);
+    int nRead = nFileLen - nHandleLen >= 2048?2048:nFileLen-nHandleLen; // 加载128组明文
+    int tmp = fread((uint8_t*)plain, 1, nRead, fin);
+    //for(int i=tmp; i<2048; i++) (uint8_t*)plain[i] = 0; // 填充0字节
 
-    fwrite((const unsigned char*)rtn, 1, 16, fout); //写入加密结果
+    sm4_crypt_ecb(&ctx, plain); // 并行加密128组
+
+    fwrite((const uint8_t*)plain, 1, 2048, fout);
 
     nHandleLen += nRead;
+
+    //int nRead = nFileLen-nHandleLen>=16?16:nFileLen-nHandleLen;
+    //int tmp = fread(buffer, 1, nRead, fin); //读取16个字节
+    //for(int i=tmp; i<16; i++) buffer[i] = 0; //填充0
+
+    //sm4_crypt_ecb(&ctx, (int)jmode, 16, (const unsigned char*)buffer, (unsigned char*)rtn);
+
+    //fwrite((const unsigned char*)rtn, 1, 16, fout); //写入加密结果
+
+    //nHandleLen += nRead;
   }
 
   fclose(fin);
