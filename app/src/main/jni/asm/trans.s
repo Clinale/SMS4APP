@@ -3217,5 +3217,5 @@ start
 	VST.64 {D28, D29}, [r0,:4064]
 
 stop
-	PX LR
+	BX LR
 	END
